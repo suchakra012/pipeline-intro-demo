@@ -6,7 +6,7 @@ pipeline {
     stage('Buzz Build') {
       steps {
         container('global-maven3-jdk8') {
-          echo 'Keep Calm and Buzz'
+          echo 'Buzz Build'
           sh '''echo I am a $BUZZ_NAME
           ./jenkins/build.sh
           '''
@@ -19,6 +19,7 @@ pipeline {
         stage('Testing A') {
           steps {
             container('global-maven3-jdk8') {
+              echo 'Buzz Test A'
               sh './jenkins/test-all.sh'
               junit '**/surefire-reports/**/*.xml'
             }
@@ -26,6 +27,7 @@ pipeline {
         }
         stage('Testing B') {
           steps {
+            echo 'Buzz Test B'
             sh '''sleep 10
             echo done.'''
           }
