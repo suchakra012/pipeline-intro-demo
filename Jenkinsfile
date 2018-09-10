@@ -4,25 +4,19 @@ pipeline {
     stage('Buzz Build') {
       steps {
         echo 'Keep Calm and Buzz'
-        sh '''echo I am a $BUZZ_NAME
-./jenkins/build.sh
-'''
-        archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
       }
     }
     stage('Buzz Test') {
       parallel {
         stage('Testing A') {
           steps {
-            sh './jenkins/test-all.sh'
-            junit '**/surefire-reports/**/*.xml'
+            echo 'Testing A...'
           }
         }
         stage('Testing B') {
           steps {
-            sh '''sleep 10
-echo done.'''
-          }
+            echo 'Testing B...'
+	  }
         }
       }
     }
