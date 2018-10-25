@@ -10,7 +10,13 @@ pipeline {
             }
           }
           steps {
-            echo 'Build Artifact Java 7'
+          container('global-maven3-jdk8') {
+              echo 'Build Artifact Java 7'
+              sh '''echo I am a $BUZZ_NAME
+              ./jenkins/build.sh
+              '''
+              archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+           }
           }
           post {
             always {
@@ -33,7 +39,7 @@ pipeline {
             BUZZ_NAME = 'Java 8 Bee'
           }
           steps {
- 	    echo 'Build Artifact Java 8'
+ 	          echo 'Build Artifact Java 8'
             echo 'Stash Artifacts Java 8'
           }
         }
