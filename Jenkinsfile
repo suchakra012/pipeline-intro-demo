@@ -1,41 +1,42 @@
 pipeline {
-  agent {
-    label 'java-maven'
-  }
+  agent any
   stages {
-    stage('Buzz Build') {
+    stage('Fluffy Build') {
       steps {
-        container('global-maven3-jdk8') {
-          echo 'Buzz Build'
-          sh '''echo I am a $BUZZ_NAME
-          ./jenkins/build.sh
-          '''
-          archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
-        }
+        sh './jenkins/build.sh'
+        archiveArtifacts 'target/*.jar'
       }
     }
-    stage('Buzz Test') {
+    stage('Fluffy Test') {
       parallel {
-        stage('Testing A') {
+        stage('Backend') {
           steps {
-            container('global-maven3-jdk8') {
-              echo 'Buzz Test A'
-              sh './jenkins/test-all.sh'
-              junit '**/surefire-reports/**/*.xml'
-            }
+            sh './jenkins/test-backend.sh'
+            junit 'target/surefire-reports/**/TEST*.xml'
           }
         }
-        stage('Testing B') {
+        stage('Frontend') {
           steps {
-            echo 'Buzz Test B'
-            sh '''sleep 10
-            echo done.'''
+            sh './jenkins/test-frontend.sh'
+            junit 'target/test-results/**/TEST*.xml'
+          }
+        }
+        stage('Performance') {
+          steps {
+            sh './jenkins/test-performance.sh'
+          }
+        }
+        stage('Static') {
+          steps {
+            sh './jenkins/test-static.sh'
           }
         }
       }
     }
-  }
-  environment {
-    BUZZ_NAME = 'Worker Bee'
+    stage('Fluffy Deploy') {
+      steps {
+        sh './jenkins/deploy.sh staging'
+      }
+    }
   }
 }
